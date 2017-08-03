@@ -1,5 +1,6 @@
 <?php
 namespace Genial\Server;
+use \Genial\Addon\Function;
 class Response implements ResponseInterface {
   protected $statuses = [
     100 => 'Continue',
