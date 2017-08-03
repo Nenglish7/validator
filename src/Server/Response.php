@@ -57,4 +57,25 @@ class Response implements ResponseInterface {
     505 => 'HTTP Version Not Supported',
     511 => 'Network Authentication Required'
   ];
+  public function send(array $data, $statusCode = 200) {
+    $this->setPageType('json');
+    $this->setStatusHeader($statusCode);
+    echo json_encode($data);
+    exit;
+  }
+  public function setPageType() {
+    
+  }
+  public function setStatusHeader($code = 200) {
+    $text = isset($this->statuses[$code]) ? $this->statuses[$code] : 'Unknown';
+    $server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : false;
+    if (substr(php_sapi_name(), 0, 3) == 'cgi') {
+      header("Status: {$code} {$text}", true);
+    } elseif ($server_protocol == 'HTTP/1.1' or $server_protocol == 'HTTP/1.0') {
+      header($server_protocol . " {$code} {$text}", true, $code);
+    } else {
+      header("HTTP/1.1 {$code} {$text}", true, $code);
+    }
+  }
 }
+?>
