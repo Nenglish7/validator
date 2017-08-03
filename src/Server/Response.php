@@ -118,6 +118,17 @@ class Response extends BrowserSupport implements ResponseInterface {
       header('Content-Type: text/plain');
     }
   }
+  public function headerSent($Header) {
+    $headers = $this->headersList();
+    $header = trim($header, ': ');
+    $res = false;
+    foreach ($headers as $hdr) {
+      if (stripos($hdr, $header) !== false) {
+        $res = true;
+      }
+    }
+    return $res;
+  }
   public function headersList() {
     return php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list();
   }
@@ -131,11 +142,33 @@ class Response extends BrowserSupport implements ResponseInterface {
       header($reRunHeader, false);
     }
   }
+  public function redirect($url = '/', $delay = 0, $statusCode = 302) {
+    $this->setStatusHeader(202);
+    $protocol = substr($Url, 0, 8);
+    $isExteral = $protocol === 'https://' || substr($protocol, 0, 7), 'http://' ? true : false;
+    if (!$isExteral) {
+      $url = rtrim(\SCRIPT_URL, '/\\') . '/' . ltrim($url, '/\\');
+    }
+    if (!headers_sent() && $this->browserSupported()) {
+      header("Refresh:{$delay};url=$url", true, $statusCode);
+    } else {
+      echo '<script type="text/javascript">';
+      echo 'var timer = setTimeout(function() {';
+      echo 'window.location=\'' . e($url) . '\'';
+      echo '}, ' . e($delay) . '000);';
+      echo '</script>';
+      echo '<noscript>';
+      echo '<meta http-equiv="refresh" content="' . e($delay) . ';url=' . e($url) . '" />';
+      echo '</noscript>';
+    }
+    exit;
+  }
   public function Refresh($delay = 0, $statusCode = 200, $useHttps = false) {
     $this->setStatusHeader(202);
     $url = '';
+    $actUrl = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     if ($useHttps) {
-      $url .= ";url=https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+      $url .= ";url=https://$actUrl";
     }
     if (!headers_sent() && $this->browserSupported()) {
       header("Refresh:$delay$url", true, $statusCode);
@@ -143,7 +176,7 @@ class Response extends BrowserSupport implements ResponseInterface {
       echo '<script type="text/javascript">';
       echo 'var timer = setTimeout(function() {';
       if ($useHttps) {
-        echo 'window.location=\'' . e(mb_substr($url, 5, 0) . '\'';
+        echo 'window.location=\'' . e($actUrl) . '\'';
       } else {
         echo 'location.reload();';    
       }
