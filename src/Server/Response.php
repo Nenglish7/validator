@@ -63,8 +63,48 @@ class Response implements ResponseInterface {
     echo json_encode($data);
     exit;
   }
-  public function setPageType() {
-    
+  public function setPageType($extension = 'txt') {
+    if ($extension === 'json') {
+      header('Content-Type: application/json');
+    } elseif ($extension === 'txt') {
+      header('Content-Type: text/plain');
+    } elseif ($extension === 'htm' || $extension === 'html' || $extension === 'php') {
+      header('Content-Type: text/html');
+    } elseif ($extension === 'css') {
+      header('Content-Type: text/css');
+    } elseif ($extension === 'js') {
+      header('Content-Type: application/javascript');
+    } elseif ($extension === 'xml') {
+      header('Content-Type: application/xml');
+    } elseif ($extension === 'swf') {
+      header('Content-Type: application/x-shockwave-flash');
+    } elseif ($extension === 'flv') {
+      header('Content-Type: video/x-flv');
+    } elseif ($extension === 'png') {
+      header('Content-Type: image/png');
+    } elseif ($extension === 'gif') {
+      header('Content-Type: image/gif');
+    } elseif ($extension === 'jpe' || $extension === 'jpeg' || $extension === 'jpg') {
+      header('Content-Type: image/jpeg');
+    } elseif ($extension === 'bmp') {
+      header('Content-Type: image/bmp');
+    } elseif ($extension === 'ico') {
+      header('Content-Type: image/vnd.microsoft.icon');
+    } elseif ($extension === 'tiff' || $extension === 'tif') {
+      header('Content-Type: image/tiff');
+    } elseif ($extension === 'svg' || $extension === 'svgz') {
+      header('Content-Type: image/svg+xml');
+    } elseif ($extension === 'zip') {
+      header('Content-Type: application/zip');
+    } elseif ($extension === 'rar') {
+      header('Content-Type: application/x-rar-compressed');
+    } elseif ($extension === 'exe' || $Extension === 'msi') {
+      header('Content-Type: application/x-msdownload');
+    } elseif ($extension === 'cab') {
+      header('Content-Type: application/vnd.ms-cab-compressed');
+    } else {
+      header('Content-Type: text/plain');
+    }
   }
   public function setStatusHeader($code = 200) {
     $text = isset($this->statuses[$code]) ? $this->statuses[$code] : 'Unknown';
