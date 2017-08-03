@@ -117,6 +117,9 @@ class Response implements ResponseInterface {
       header('Content-Type: text/plain');
     }
   }
+  public function headersList() {
+    return php_sapi_name() === 'cli' ? xdebug_get_headers() : headers_list();
+  }
   public function clearDuplicates() {
     $dataSet = array();
     foreach ($this->headersList() as $headerItem) {
