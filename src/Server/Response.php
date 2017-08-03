@@ -117,12 +117,12 @@ class Response implements ResponseInterface {
       header('Content-Type: text/plain');
     }
   }
-  public function clearDuplicates(/* $headerType = 'Set-Cookie' */) {
+  public function clearDuplicates() {
     $dataSet = array();
     foreach ($this->headersList() as $headerItem) {
       array_push($dataSet, $headerItem);
     }
-    header_remove(/* $headerType */);
+    header_remove();
     foreach(array_unique($dataSet) as $reRunHeader) {
       header($reRunHeader, false);
     }
