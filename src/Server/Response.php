@@ -117,6 +117,16 @@ class Response implements ResponseInterface {
       header('Content-Type: text/plain');
     }
   }
+  public function clearDuplicates(/* $headerType = 'Set-Cookie' */) {
+    $dataSet = array();
+    foreach ($this->headersList() as $headerItem) {
+      array_push($dataSet, $headerItem);
+    }
+    header_remove(/* $headerType */);
+    foreach(array_unique($dataSet) as $reRunHeader) {
+      header($reRunHeader, false);
+    }
+  }
   public function setStatusHeader($code = 200) {
     $text = isset($this->statuses[$code]) ? $this->statuses[$code] : 'Unknown';
     $server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : false;
