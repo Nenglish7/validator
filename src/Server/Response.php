@@ -131,31 +131,39 @@ class Response extends BrowserSupport implements ResponseInterface {
       header($reRunHeader, false);
     }
   }
-  public function Refresh($delay = 0, $statusCode = 200) {
+  public function Refresh($delay = 0, $statusCode = 200, $useHttps = false) {
     $this->setStatusHeader(202);
+    $url = '';
+    if ($useHttps) {
+      $url .= ";url=https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    }
     if (!headers_sent() && $this->browserSupported()) {
-      header("Refresh:{$delay}", true, $statusCode);
+      header("Refresh:$delay$url", true, $statusCode);
     } else {
       echo '<script type="text/javascript">';
       echo 'var timer = setTimeout(function() {';
-      echo 'location.reload();';
+      if ($useHttps) {
+        echo 'window.location=\'' . e(mb_substr($url, 5, 0) . '\'';
+      } else {
+        echo 'location.reload();';    
+      }
       echo '}, ' . e($delay) . '000);';
       echo '</script>';
       echo '<noscript>';
-      echo '<meta http-equiv="refresh" content="' . e($delay) . '" />';
+      echo '<meta http-equiv="refresh" content="' . e($delay) . e($url) . '" />';
       echo '</noscript>';
     }
     exit;
   }
   public function setStatusHeader($code = 200) {
     $text = isset($this->statuses[$code]) ? $this->statuses[$code] : 'Unknown';
-    $server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : false;
+    $serverProtocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : false;
     if (substr(php_sapi_name(), 0, 3) == 'cgi') {
-      header("Status: {$code} {$text}", true);
-    } elseif ($server_protocol == 'HTTP/1.1' or $server_protocol == 'HTTP/1.0') {
-      header($server_protocol . " {$code} {$text}", true, $code);
+      header("Status: $code $text", true);
+    } elseif ($serverProtocol == 'HTTP/1.1' or $serverProtocol == 'HTTP/1.0') {
+      header("$serverProtocol $code $text", true, $code);
     } else {
-      header("HTTP/1.1 {$code} {$text}", true, $code);
+      header("HTTP/1.1 $code $text", true, $code);
     }
   }
 }
