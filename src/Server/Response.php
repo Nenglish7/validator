@@ -1,8 +1,8 @@
 <?php
 namespace Genial\Server;
 use \Genial\Addon\Function;
-use \Genial\Browser;
-class Response extends BrowserSupport implements ResponseInterface {
+use \Genial\Browser\Verify;
+class Response extends ResponseAuth implements ResponseInterface {
   protected $statuses = [
     100 => 'Continue',
     101 => 'Switching Protocols',
@@ -75,6 +75,11 @@ class Response extends BrowserSupport implements ResponseInterface {
     echo json_encode($data);
     exit;
   }
+	public function validate($responseData = array()) {
+		if (empty   
+			
+		}
+	}
   public function setPageType($extension = 'txt') {
     if ($extension === 'json') {
       header('Content-Type: application/json');
