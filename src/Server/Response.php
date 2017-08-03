@@ -1,7 +1,7 @@
 <?php
 namespace Genial\Server;
 use \Genial\Addon\Function;
-use \Genial\Browser\Verify;
+use \Genial\Browser\Verify, \Genial\Browser\Support as Support;
 class Response extends ResponseAuth implements ResponseInterface {
   protected $statuses = [
     100 => 'Continue',
@@ -75,9 +75,18 @@ class Response extends ResponseAuth implements ResponseInterface {
     echo json_encode($data);
     exit;
   }
-	public function validate($responseData = array()) {
-		if (empty   
-			
+	public function validate(array $responseData = array()) {
+		$this->setStatusHeader(202);
+		if (empty($responseData)) {
+      if ($this->errType === 'json') {
+				$this->send(array(
+				  'status' => 'err',
+					'sent' => 'array[]',
+					'msg' => 'invalid csrf requ est.'
+				));
+			} else {
+				
+			}
 		}
 	}
   public function setPageType($extension = 'txt') {
@@ -154,7 +163,7 @@ class Response extends ResponseAuth implements ResponseInterface {
     if (!$isExteral) {
       $url = rtrim(\SCRIPT_URL, '/\\') . '/' . ltrim($url, '/\\');
     }
-    if (!headers_sent() && $this->browserSupported()) {
+    if (!headers_sent() && Support::browserSupported()) {
       header("Refresh:{$delay};url=$url", true, $statusCode);
     } else {
       echo '<script type="text/javascript">';
@@ -175,7 +184,7 @@ class Response extends ResponseAuth implements ResponseInterface {
     if ($useHttps) {
       $url .= ";url=https://$actUrl";
     }
-    if (!headers_sent() && $this->browserSupported()) {
+    if (!headers_sent() && Support::browserSupported()) {
       header("Refresh:$delay$url", true, $statusCode);
     } else {
       echo '<script type="text/javascript">';
