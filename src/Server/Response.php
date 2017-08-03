@@ -1,7 +1,8 @@
 <?php
 namespace Genial\Server;
 use \Genial\Addon\Function;
-class Response implements ResponseInterface {
+use \Genial\Browser;
+class Response extends BrowserSupport implements ResponseInterface {
   protected $statuses = [
     100 => 'Continue',
     101 => 'Switching Protocols',
@@ -58,11 +59,11 @@ class Response implements ResponseInterface {
     511 => 'Network Authentication Required'
   ];
   public function __construct() {
-    $Secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? true : false;
-    if (!$Secure && \HTTPS_ACTIVE) {
-      $this->Refresh(0, 301, true);
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? true : false;
+    if (!$secure && \HTTPS_ACTIVE) {
+      $this->refresh(0, 301, true);
     }
-    $this->ClearDuplicates();
+    $this->clearDuplicates();
     header_register_callback(function () {
       header_remove('X-Powered-By');
       header('X-Powered-By: Genial');
@@ -129,6 +130,22 @@ class Response implements ResponseInterface {
     foreach(array_unique($dataSet) as $reRunHeader) {
       header($reRunHeader, false);
     }
+  }
+  public function Refresh($delay = 0, $statusCode = 200) {
+    $this->setStatusHeader(202);
+    if (!headers_sent() && $this->browserSupported()) {
+      header("Refresh:{$delay}", true, $statusCode);
+    } else {
+      echo '<script type="text/javascript">';
+      echo 'var timer = setTimeout(function() {';
+      echo 'location.reload();';
+      echo '}, ' . e($delay) . '000);';
+      echo '</script>';
+      echo '<noscript>';
+      echo '<meta http-equiv="refresh" content="' . e($delay) . '" />';
+      echo '</noscript>';
+    }
+    exit;
   }
   public function setStatusHeader($code = 200) {
     $text = isset($this->statuses[$code]) ? $this->statuses[$code] : 'Unknown';
