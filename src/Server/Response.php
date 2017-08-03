@@ -57,6 +57,17 @@ class Response implements ResponseInterface {
     505 => 'HTTP Version Not Supported',
     511 => 'Network Authentication Required'
   ];
+  public function __construct() {
+    $Secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? true : false;
+    if (!$Secure && \HTTPS_ACTIVE) {
+      $this->Refresh(0, 301, true);
+    }
+    $this->ClearDuplicates();
+    header_register_callback(function () {
+      header_remove('X-Powered-By');
+      header('X-Powered-By: Genial');
+    });
+	}
   public function send(array $data, $statusCode = 200) {
     $this->setPageType('json');
     $this->setStatusHeader($statusCode);
