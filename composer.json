@@ -3,6 +3,8 @@
     "type": "library",
     "keywords": [
         "php-library",
+        "validator",
+        "dependency",
         "php7"
     ],
     "description": "A validation dependency that provides a wide range of validation tools and a validator chain mechanism for complex validation.",
