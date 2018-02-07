@@ -1,1 +1,36 @@
-
+{
+    "name": "obozaxy/validator",
+    "type": "library",
+    "keywords": [
+        "php-library",
+        "php7"
+    ],
+    "description": "A validation dependency that provides a wide range of validation tools and a validator chain mechanism for complex validation.",
+    "homepage": "https://github.com/obozaxy/validator",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Nicholas English",
+            "homepage": "https://github.com/obozaxy",
+            "email": "nenglish0820@outlook.com",
+            "role": "Owner/Developer"
+        }
+    ],
+    "require": {
+        "php": "^7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Obozaxy\\Engine\\": "./src",
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
