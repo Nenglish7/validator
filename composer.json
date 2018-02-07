@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Obozaxy\\Engine\\": "./src",
+            "Obozaxy\\Engine\\": "./src"
         }
     },
     "require-dev": {
